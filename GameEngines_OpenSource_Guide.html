@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Engines & Frameworks — Open Source Guide</title>
+    <style>
+        :root {
+            --primary: #6d28d9;
+            --primary-light: #8b5cf6;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-alt: #334155;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+            --border: #475569;
+            --glow: rgba(139, 92, 246, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #4c1d95 60%, #6d28d9 100%);
+            padding: 80px 0 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(139,92,246,0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(14,165,233,0.1) 0%, transparent 40%);
+        }
+        .hero * { position: relative; }
+        .hero .emoji { font-size: 4rem; margin-bottom: 16px; }
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; }
+        .hero h1 span { background: linear-gradient(90deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.2rem; color: #c4b5fd; max-width: 700px; margin: 0 auto 20px; }
+        .hero-badges { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .hero-badge {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            padding: 50px 0 30px;
+        }
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .section-header p { color: var(--text-dim); font-size: 1.05rem; }
+        .section-divider {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            padding-bottom: 40px;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px var(--glow);
+        }
+        .card-icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .card h3 { font-size: 1.3rem; margin-bottom: 4px; }
+        .card .subtitle { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 14px; }
+        .card p { color: #cbd5e1; font-size: 0.95rem; margin-bottom: 16px; }
+
+        /* Tags */
+        .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .tag {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .tag-purple { background: #4c1d95; color: #c4b5fd; }
+        .tag-blue { background: #0c4a6e; color: #7dd3fc; }
+        .tag-green { background: #064e3b; color: #6ee7b7; }
+        .tag-amber { background: #78350f; color: #fcd34d; }
+        .tag-red { background: #7f1d1d; color: #fca5a5; }
+        .tag-pink { background: #831843; color: #f9a8d4; }
+
+        /* Info rows */
+        .info-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .info-label { color: var(--text-dim); min-width: 90px; }
+        .info-value { color: var(--text); font-weight: 500; }
+
+        /* Links */
+        a { color: var(--secondary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card-alt);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+        .github-link:hover { background: #475569; text-decoration: none; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        th {
+            background: var(--bg-card-alt);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #334155;
+            font-size: 0.93rem;
+        }
+        tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* Comparison Table */
+        .comparison-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .comparison-table table { margin: 0; }
+        .comparison-table th { background: #1e1b4b; color: #a5b4fc; }
+        .comparison-table td:first-child { font-weight: 600; }
+
+        /* Flow Diagram */
+        .flow-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 30px;
+        }
+        .flow-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--primary-light);
+        }
+        .flow-box {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.5;
+            color: #a5b4fc;
+        }
+
+        /* Roadmap */
+        .roadmap {
+            position: relative;
+            padding: 20px 0;
+        }
+        .roadmap-item {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .roadmap-marker {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .roadmap-item:not(:last-child) .roadmap-marker::after {
+            content: '';
+            position: absolute;
+            top: 56px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: calc(100% + 30px);
+            background: linear-gradient(180deg, var(--primary), transparent);
+        }
+        .roadmap-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            flex: 1;
+        }
+        .roadmap-content h4 { font-size: 1.1rem; margin-bottom: 6px; }
+        .roadmap-content p { color: #cbd5e1; font-size: 0.93rem; }
+        .roadmap-games {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .game-tag {
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+        }
+
+        /* Level colors */
+        .level-1 { background: linear-gradient(135deg, #059669, #10b981); }
+        .level-2 { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
+        .level-3 { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+        .level-4 { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #1e293b; }
+
+        /* Project Structure */
+        .project-structure {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.88rem;
+            color: #6ee7b7;
+            margin: 20px 0;
+        }
+
+        /* Stars */
+        .stars { color: var(--accent); }
+
+        /* Pros/Cons */
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+        .pros, .cons {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        .pros { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); }
+        .cons { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); }
+        .pros strong { color: #6ee7b7; }
+        .cons strong { color: #fca5a5; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 50px 0;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .pros-cons { grid-template-columns: 1fr; }
+        }
+
+        /* Print */
+        @media print {
+            body { background: white; color: #1e293b; }
+            .hero { padding: 30px 0; background: #4c1d95 !important; }
+            .card, .flow-section, .comparison-table, .roadmap-content {
+                background: white; border-color: #e2e8f0;
+                break-inside: avoid; page-break-inside: avoid;
+            }
+            .flow-box, .project-structure { background: #f8fafc; color: #1e293b; border-color: #e2e8f0; }
+            th { background: #f1f5f9 !important; color: #475569 !important; }
+            td { border-color: #e2e8f0; }
+            .tag-purple, .tag-blue, .tag-green, .tag-amber { opacity: 0.9; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+    <div class="container">
+        <div class="emoji">🎮</div>
+        <h1>Game Engines & <span>Frameworks</span></h1>
+        <p>A complete guide to open-source game development tools, AI integration, and building your own game console</p>
+        <div class="hero-badges">
+            <span class="hero-badge">🕹️ 10+ Tools Reviewed</span>
+            <span class="hero-badge">🤖 AI Integration Guide</span>
+            <span class="hero-badge">📋 4-Level Learning Path</span>
+            <span class="hero-badge">🎯 Project Templates</span>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- ==================== SECTION 1: GAME ENGINES ==================== -->
+    <div class="section-header">
+        <h2>🎮 Game Engines & Frameworks</h2>
+        <p>Open-source tools for building games from scratch</p>
+        <div class="section-divider"></div>
+    </div>
+
+    <div class="cards-grid">
+        <!-- Godot -->
+        <div class="card">
+            <div class="card-icon">🔵</div>
+            <h3>Godot Engine</h3>
+            <div class="subtitle">Best for Beginners · 2D & 3D</div>
+            <div class="tags">
+                <span class="tag tag-green">GDScript</span>
+                <span class="tag tag-blue">C#</span>
+                <span class="tag tag-purple">C++</span>
+                <span class="tag tag-amber">⭐ 93k+ Stars</span>
+            </div>
+            <p>Lightweight, fully open-source game engine with first-class 2D support and growing 3D capabilities. GDScript is Python-like, making it easy for Python developers.</p>
+            <div class="info-row"><span class="info-label">License:</span><span class="info-value">MIT</span></div>
+            <div class="info-row"><span class="info-label">Platforms:</span><span class="info-value">Windows, macOS, Linux, Web, Mobile</span></div>
+            <div class="info-row"><span class="info-label">Best For:</span><span class="info-value">2D games, RPGs, platformers, puzzle games</span></div>
+            <div class="pros-cons">
+                <div class="pros"><strong>✅ Pros:</strong><br>• Python-like syntax<br>• Truly open source<br>• Lightweight (~40MB)<br>• Built-in editor</div>
+                <div class="cons"><strong>⚠️ Cons:</strong><br>• Smaller ecosystem than Unity<br>• 3D still maturing<br>• Fewer tutorials online</div>
+            </div>
+            <a href="https://github.com/godotengine/godot" class="github-link">⭐ github.com/godotengine/godot</a>
+        </div>
+
+        <!-- Pygame -->
+        <div class="card">
+            <div class="card-icon">🐍</div>
+            <h3>Pygame</h3>
+            <div class="subtitle">Python-Based · Perfect for Python Devs</div>
+            <div class="tags">
+                <span class="tag tag-green">Python</span>
+                <span class="tag tag-blue">SDL2</span>
+                <span class="tag tag-amber">⭐ 7k+ Stars</span>
+            </div>
+            <p>Python library for writing video games. Built on SDL, it provides modules for graphics, sound, and input. Ideal if you already know Python.</p>
+            <div class="info-row"><span class="info-label">License:</span><span class="info-value">LGPL</span></div>
+            <div class="info-row"><span class="info-label">Platforms:</span><span class="info-value">Windows, macOS, Linux</span></div>
+            <div class="info-row"><span class="info-label">Best For:</span><span class="info-value">2D arcade games, prototypes, learning</span></div>
+            <div class="pros-cons">
+                <div class="pros"><strong>✅ Pros:</strong><br>• Pure Python<br>• Very easy to start<br>• Tons of tutorials<br>• Great for AI games</div>
+                <div class="cons"><strong>⚠️ Cons:</strong><br>• 2D only<br>• Performance limits<br>• No built-in editor</div>
+            </div>
+            <a href="https://github.com/pygame/pygame" class="github-link">⭐ github.com/pygame/pygame</a>
+        </div>
+
+        <!-- Phaser -->
+        <div class="card">
+            <div class="card-icon">🌐</div>
+            <h3>Phaser.js</h3>
+            <div class="subtitle">Web-Based · Browser Games</div>
+            <div class="tags">
+                <span class="tag tag-amber">JavaScript</span>
+                <span class="tag tag-blue">TypeScript</span>
+                <span class="tag tag-green">WebGL</span>
+                <span class="tag tag-amber">⭐ 37k+ Stars</span>
+            </div>
+            <p>Fast, free, and fun 2D game framework for making HTML5 games. Games run directly in the browser — easy to share and deploy anywhere.</p>
+            <div class="info-row"><span class="info-label">License:</span><span class="info-value">MIT</span></div>
+            <div class="info-row"><span class="info-label">Platforms:</span><span class="info-value">All browsers, Mobile web</span></div>
+            <div class="info-row"><span class="info-label">Best For:</span><span class="info-value">2D browser games, multiplayer, casual games</span></div>
+            <div class="pros-cons">
+                <div class="pros"><strong>✅ Pros:</strong><br>• Browser-native<br>• Easy to share<br>• WebGL rendering<br>• Huge community</div>
+                <div class="cons"><strong>⚠️ Cons:</strong><br>• 2D focused<br>• JavaScript only<br>• Browser limitations</div>
+            </div>
+            <a href="https://github.com/phaserjs/phaser" class="github-link">⭐ github.com/phaserjs/phaser</a>
+        </div>
+
+        <!-- Raylib -->
+        <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>Raylib</h3>
+            <div class="subtitle">Lightweight · C Library with Python Bindings</div>
+            <div class="tags">
+                <span class="tag tag-blue">C</span>
+                <span class="tag tag-green">Python Bindings</span>
+                <span class="tag tag-purple">60+ Bindings</span>
+                <span class="tag tag-amber">⭐ 24k+ Stars</span>
+            </div>
+            <p>Simple, enjoyable C library for learning game programming fundamentals. Minimal dependencies, cross-platform, with Python bindings via raylib-python-cffi.</p>
+            <div class="info-row"><span class="info-label">License:</span><span class="info-value">Zlib</span></div>
+            <div class="info-row"><span class="info-label">Platforms:</span><span class="info-value">Windows, macOS, Linux, Web, Mobile</span></div>
+            <div class="info-row"><span class="info-label">Best For:</span><span class="info-value">Learning, prototyping, small-to-mid games</span></div>
+            <div class="pros-cons">
+                <div class="pros"><strong>✅ Pros:</strong><br>• Very lightweight<br>• No dependencies<br>• Python bindings<br>• 2D and 3D</div>
+                <div class="cons"><strong>⚠️ Cons:</strong><br>• Lower-level API<br>• Less hand-holding<br>• Smaller community</div>
+            </div>
+            <a href="https://github.com/raysan5/raylib" class="github-link">⭐ github.com/raysan5/raylib</a>
+        </div>
+
+        <!-- Bevy -->
+        <div class="card">
+            <div class="card-icon">🦀</div>
+            <h3>Bevy Engine</h3>
+            <div class="subtitle">Modern · Data-Driven · Rust</div>
+            <div class="tags">
+                <span class="tag tag-red">Rust</span>
+                <span class="tag tag-purple">ECS Architecture</span>
+                <span class="tag tag-amber">⭐ 37k+ Stars</span>
+            </div>
+            <p>A refreshingly simple, data-driven game engine built in Rust. Uses Entity Component System (ECS) architecture for high performance and clean code.</p>
+            <div class="info-row"><span class="info-label">License:</span><span class="info-value">MIT / Apache 2.0</span></div>
+            <div class="info-row"><span class="info-label">Platforms:</span><span class="info-value">Windows, macOS, Linux, Web</span></div>
+            <div class="info-row"><span class="info-label">Best For:</span><span class="info-value">Performance-critical games, modern architecture</span></div>
+            <div class="pros-cons">
+                <div class="pros"><strong>✅ Pros:</strong><br>• Blazing fast<br>• Modern ECS design<br>• Active community<br>• Memory safe</div>
+                <div class="cons"><strong>⚠️ Cons:</strong><br>• Rust learning curve<br>• Still in early dev<br>• Breaking changes</div>
+            </div>
+            <a href="https://github.com/bevyengine/bevy" class="github-link">⭐ github.com/bevyengine/bevy</a>
+        </div>
+
+        <!-- Panda3D -->
+        <div class="card">
+            <div class="card-icon">🐼</div>
+            <h3>Panda3D</h3>
+            <div class="subtitle">3D Engine · Python & C++</div>
+            <div class="tags">
+                <span class="tag tag-green">Python</span>
+                <span class="tag tag-blue">C++</span>
+                <span class="tag tag-purple">Disney/CMU</span>
+                <span class="tag tag-amber">⭐ 4.6k+ Stars</span>
+            </div>
+            <p>Mature 3D game engine originally developed by Disney, now maintained by CMU. Full Python API makes 3D game development accessible.</p>
+            <div class="info-row"><span class="info-label">License:</span><span class="info-value">Modified BSD</span></div>
+            <div class="info-row"><span class="info-label">Platforms:</span><span class="info-value">Windows, macOS, Linux</span></div>
+            <div class="info-row"><span class="info-label">Best For:</span><span class="info-value">3D games in Python, simulations, VR</span></div>
+            <div class="pros-cons">
+                <div class="pros"><strong>✅ Pros:</strong><br>• Full Python API<br>• Mature & stable<br>• Good for 3D<br>• Used in production</div>
+                <div class="cons"><strong>⚠️ Cons:</strong><br>• Dated graphics<br>• Smaller community<br>• Steep 3D learning</div>
+            </div>
+            <a href="https://github.com/panda3d/panda3d" class="github-link">⭐ github.com/panda3d/panda3d</a>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 2: AI TOOLS ==================== -->
+    <div class="section-header">
+        <h2>🤖 AI Tools for Game Development</h2>
+        <p>Train intelligent agents, build smart NPCs, and add AI to your games</p>
+        <div class="section-divider"></div>
+    </div>
+
+    <div class="cards-grid">
+        <!-- Gymnasium -->
+        <div class="card">
+            <div class="card-icon">🏋️</div>
+            <h3>Gymnasium (OpenAI Gym)</h3>
+            <div class="subtitle">Train AI Game Agents</div>
+            <div class="tags">
+                <span class="tag tag-green">Python</span>
+                <span class="tag tag-purple">Reinforcement Learning</span>
+            </div>
+            <p>Standard API for reinforcement learning environments. Create custom game environments and train AI agents to play them. Successor to OpenAI Gym.</p>
+            <div class="info-row"><span class="info-label">Use Case:</span><span class="info-value">Train AI to play your games</span></div>
+            <div class="info-row"><span class="info-label">Key Feature:</span><span class="info-value">Standard Env API, 100+ built-in environments</span></div>
+            <a href="https://github.com/Farama-Foundation/Gymnasium" class="github-link">⭐ github.com/Farama-Foundation/Gymnasium</a>
+        </div>
+
+        <!-- Stable Baselines3 -->
+        <div class="card">
+            <div class="card-icon">🧠</div>
+            <h3>Stable Baselines3</h3>
+            <div class="subtitle">Pre-built RL Algorithms</div>
+            <div class="tags">
+                <span class="tag tag-green">Python</span>
+                <span class="tag tag-blue">PyTorch</span>
+                <span class="tag tag-amber">PPO / DQN / A2C</span>
+            </div>
+            <p>Reliable implementations of reinforcement learning algorithms. Plug-and-play with Gymnasium environments. Perfect for adding AI opponents to games.</p>
+            <div class="info-row"><span class="info-label">Use Case:</span><span class="info-value">Plug-and-play AI algorithms for games</span></div>
+            <div class="info-row"><span class="info-label">Algorithms:</span><span class="info-value">PPO, DQN, A2C, SAC, TD3, HER</span></div>
+            <a href="https://github.com/DLR-RM/stable-baselines3" class="github-link">⭐ github.com/DLR-RM/stable-baselines3</a>
+        </div>
+
+        <!-- Unity ML-Agents -->
+        <div class="card">
+            <div class="card-icon">🎯</div>
+            <h3>Unity ML-Agents</h3>
+            <div class="subtitle">AI in Unity Games</div>
+            <div class="tags">
+                <span class="tag tag-blue">C#</span>
+                <span class="tag tag-green">Python</span>
+                <span class="tag tag-purple">PyTorch</span>
+            </div>
+            <p>Train intelligent agents in Unity game environments using deep reinforcement learning. Supports multi-agent scenarios and curriculum learning.</p>
+            <div class="info-row"><span class="info-label">Use Case:</span><span class="info-value">Smart NPCs, game testing, simulations</span></div>
+            <div class="info-row"><span class="info-label">Key Feature:</span><span class="info-value">Visual training in Unity editor</span></div>
+            <a href="https://github.com/Unity-Technologies/ml-agents" class="github-link">⭐ github.com/Unity-Technologies/ml-agents</a>
+        </div>
+
+        <!-- Pygame Learning Environment -->
+        <div class="card">
+            <div class="card-icon">📊</div>
+            <h3>PettingZoo</h3>
+            <div class="subtitle">Multi-Agent RL Environments</div>
+            <div class="tags">
+                <span class="tag tag-green">Python</span>
+                <span class="tag tag-purple">Multi-Agent</span>
+            </div>
+            <p>Standard API for multi-agent reinforcement learning. Train multiple AI agents to compete or cooperate in game environments.</p>
+            <div class="info-row"><span class="info-label">Use Case:</span><span class="info-value">Multiplayer AI, competitive games</span></div>
+            <div class="info-row"><span class="info-label">Key Feature:</span><span class="info-value">Multi-agent support, 50+ environments</span></div>
+            <a href="https://github.com/Farama-Foundation/PettingZoo" class="github-link">⭐ github.com/Farama-Foundation/PettingZoo</a>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 3: GAME CONSOLE ==================== -->
+    <div class="section-header">
+        <h2>🕹️ Game Console Projects</h2>
+        <p>Build your own retro game console or emulator frontend</p>
+        <div class="section-divider"></div>
+    </div>
+
+    <div class="cards-grid">
+        <!-- RetroArch -->
+        <div class="card">
+            <div class="card-icon">🕹️</div>
+            <h3>RetroArch</h3>
+            <div class="subtitle">Build Your Own Game Console</div>
+            <div class="tags">
+                <span class="tag tag-blue">C</span>
+                <span class="tag tag-green">Multi-Platform</span>
+                <span class="tag tag-amber">⭐ 10k+ Stars</span>
+            </div>
+            <p>Open-source frontend for emulators, game engines, and media players. Supports NES, SNES, GBA, PS1, and many more. Build a custom game console on Raspberry Pi or PC.</p>
+            <div class="info-row"><span class="info-label">Supported:</span><span class="info-value">NES, SNES, GBA, N64, PS1, Arcade, and 50+ more</span></div>
+            <a href="https://github.com/libretro/RetroArch" class="github-link">⭐ github.com/libretro/RetroArch</a>
+        </div>
+
+        <!-- EmulatorJS -->
+        <div class="card">
+            <div class="card-icon">🌐</div>
+            <h3>EmulatorJS</h3>
+            <div class="subtitle">Browser-Based Game Console</div>
+            <div class="tags">
+                <span class="tag tag-amber">JavaScript</span>
+                <span class="tag tag-blue">WebAssembly</span>
+                <span class="tag tag-amber">⭐ 3k+ Stars</span>
+            </div>
+            <p>Run retro games directly in a web browser. No installation needed. Self-hostable game console that works on any device with a browser.</p>
+            <div class="info-row"><span class="info-label">Supported:</span><span class="info-value">NES, SNES, GBA, DS, N64, PS1</span></div>
+            <a href="https://github.com/EmulatorJS/EmulatorJS" class="github-link">⭐ github.com/EmulatorJS/EmulatorJS</a>
+        </div>
+
+        <!-- Lakka -->
+        <div class="card">
+            <div class="card-icon">🐧</div>
+            <h3>Lakka</h3>
+            <div class="subtitle">Turn PC/Pi into Game Console</div>
+            <div class="tags">
+                <span class="tag tag-blue">Linux</span>
+                <span class="tag tag-green">Raspberry Pi</span>
+                <span class="tag tag-purple">LibreELEC</span>
+            </div>
+            <p>Lightweight Linux distro that transforms a Raspberry Pi or old PC into a full retro gaming console with a beautiful TV-friendly interface.</p>
+            <div class="info-row"><span class="info-label">Hardware:</span><span class="info-value">Raspberry Pi, x86 PCs, ARM boards</span></div>
+            <a href="https://github.com/libretro/Lakka-LibreELEC" class="github-link">⭐ github.com/libretro/Lakka-LibreELEC</a>
+        </div>
+    </div>
+
+    <!-- ==================== COMPARISON TABLE ==================== -->
+    <div class="section-header">
+        <h2>📊 Quick Comparison</h2>
+        <p>Side-by-side comparison of game engines and frameworks</p>
+        <div class="section-divider"></div>
+    </div>
+
+    <div class="comparison-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Engine</th>
+                    <th>Language</th>
+                    <th>2D/3D</th>
+                    <th>Difficulty</th>
+                    <th>Best For</th>
+                    <th>AI Ready</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>🔵 Godot</td>
+                    <td>GDScript, C#</td>
+                    <td>2D ★★★ / 3D ★★</td>
+                    <td><span class="stars">⭐⭐</span> Easy</td>
+                    <td>General purpose games</td>
+                    <td>✅ Via GDScript</td>
+                </tr>
+                <tr>
+                    <td>🐍 Pygame</td>
+                    <td>Python</td>
+                    <td>2D ★★★ / 3D ✗</td>
+                    <td><span class="stars">⭐</span> Easiest</td>
+                    <td>Learning, prototypes, AI games</td>
+                    <td>✅✅ Native Python</td>
+                </tr>
+                <tr>
+                    <td>🌐 Phaser.js</td>
+                    <td>JavaScript/TS</td>
+                    <td>2D ★★★ / 3D ✗</td>
+                    <td><span class="stars">⭐⭐</span> Easy</td>
+                    <td>Browser & mobile web games</td>
+                    <td>⚠️ Via TensorFlow.js</td>
+                </tr>
+                <tr>
+                    <td>⚡ Raylib</td>
+                    <td>C (Python bindings)</td>
+                    <td>2D ★★ / 3D ★★</td>
+                    <td><span class="stars">⭐⭐⭐</span> Medium</td>
+                    <td>Learning, performance</td>
+                    <td>✅ Via Python</td>
+                </tr>
+                <tr>
+                    <td>🦀 Bevy</td>
+                    <td>Rust</td>
+                    <td>2D ★★ / 3D ★★</td>
+                    <td><span class="stars">⭐⭐⭐⭐</span> Hard</td>
+                    <td>Modern, performant games</td>
+                    <td>⚠️ Limited</td>
+                </tr>
+                <tr>
+                    <td>🐼 Panda3D</td>
+                    <td>Python, C++</td>
+                    <td>2D ★ / 3D ★★★</td>
+                    <td><span class="stars">⭐⭐⭐</span> Medium</td>
+                    <td>3D games in Python</td>
+                    <td>✅ Native Python</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== LEARNING ROADMAP ==================== -->
+    <div class="section-header">
+        <h2>🚀 Learning Roadmap</h2>
+        <p>Recommended progression from beginner to building your own game console</p>
+        <div class="section-divider"></div>
+    </div>
+
+    <div class="roadmap">
+        <!-- Level 1 -->
+        <div class="roadmap-item">
+            <div class="roadmap-marker level-1">🟢</div>
+            <div class="roadmap-content">
+                <h4>Level 1: Pygame Basics</h4>
+                <p>Start with Python-based game development. Build classic arcade games to learn game loops, collision detection, sprites, and sound.</p>
+                <div class="roadmap-games">
+                    <span class="game-tag">🐍 Snake</span>
+                    <span class="game-tag">🧱 Tetris</span>
+                    <span class="game-tag">🚀 Space Invaders</span>
+                    <span class="game-tag">🏓 Pong</span>
+                    <span class="game-tag">💣 Minesweeper</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 2 -->
+        <div class="roadmap-item">
+            <div class="roadmap-marker level-2">🔵</div>
+            <div class="roadmap-content">
+                <h4>Level 2: Add AI Opponents</h4>
+                <p>Implement classical AI algorithms in your games. Build intelligent opponents using minimax, pathfinding, and state machines.</p>
+                <div class="roadmap-games">
+                    <span class="game-tag">♟️ Chess with Minimax AI</span>
+                    <span class="game-tag">⭕ Unbeatable Tic-Tac-Toe</span>
+                    <span class="game-tag">🎯 AI Pathfinding (A*)</span>
+                    <span class="game-tag">🤖 NPC State Machines</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 3 -->
+        <div class="roadmap-item">
+            <div class="roadmap-marker level-3">🟣</div>
+            <div class="roadmap-content">
+                <h4>Level 3: Reinforcement Learning</h4>
+                <p>Train AI agents to play your games using deep reinforcement learning. Watch AI learn and improve in real-time.</p>
+                <div class="roadmap-games">
+                    <span class="game-tag">🏋️ Gymnasium Environments</span>
+                    <span class="game-tag">📊 Stable Baselines3 Training</span>
+                    <span class="game-tag">👁️ Real-time AI Visualization</span>
+                    <span class="game-tag">🎮 Custom Game Envs</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 4 -->
+        <div class="roadmap-item">
+            <div class="roadmap-marker level-4">🟡</div>
+            <div class="roadmap-content">
+                <h4>Level 4: Full Game Console</h4>
+                <p>Build a unified game launcher that hosts all your games. Add profiles, leaderboards, themes, and make it a complete experience.</p>
+                <div class="roadmap-games">
+                    <span class="game-tag">🖥️ Game Launcher UI</span>
+                    <span class="game-tag">🎨 Custom Themes</span>
+                    <span class="game-tag">🏆 Leaderboards</span>
+                    <span class="game-tag">👤 Player Profiles</span>
+                    <span class="game-tag">🎵 Sound System</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PROJECT STRUCTURE ==================== -->
+    <div class="flow-section">
+        <h3>📁 Pygame Game Console — Project Structure</h3>
+        <div class="project-structure">
+my-game-console/
+├── 🚀 launcher.py              # Main menu / game selector UI
+├── 📦 requirements.txt         # Python dependencies
+├── 🔧 config.py                # Settings and configuration
+│
+├── 🎮 games/
+│   ├── __init__.py
+│   ├── snake/
+│   │   ├── game.py             # Snake game logic
+│   │   └── assets/             # Snake sprites & sounds
+│   ├── tetris/
+│   │   ├── game.py             # Tetris game logic
+│   │   └── assets/
+│   ├── space_invaders/
+│   │   ├── game.py             # Space Invaders logic
+│   │   └── assets/
+│   └── chess/
+│       ├── game.py             # Chess game with AI
+│       ├── ai_engine.py        # Minimax AI opponent
+│       └── assets/
+│
+├── 🤖 ai/
+│   ├── npc_agent.py            # AI opponent behaviors
+│   ├── rl_trainer.py           # Reinforcement learning setup
+│   └── trained_models/         # Saved AI models
+│
+├── 🎨 assets/
+│   ├── fonts/                  # Custom game fonts
+│   ├── sounds/                 # Sound effects & music
+│   ├── images/                 # UI images & icons
+│   └── themes/                 # Console themes
+│
+├── 💾 data/
+│   ├── leaderboard.json        # High scores
+│   └── profiles.json           # Player profiles
+│
+└── 📝 docs/
+    ├── README.md
+    └── CONTRIBUTING.md</div>
+    </div>
+
+    <!-- ==================== FLOW DIAGRAM ==================== -->
+    <div class="flow-section">
+        <h3>🔄 Game Console Architecture Flow</h3>
+        <div class="flow-box">
+                              ┌─────────────────────────────┐
+                              │      GAME LAUNCHER (UI)      │
+                              │                             │
+                              │   ┌───┐ ┌───┐ ┌───┐ ┌───┐ │
+                              │   │ 🐍│ │ 🧱│ │ 🚀│ │ ♟️│ │
+                              │   │   │ │   │ │   │ │   │ │
+                              │   └─┬─┘ └─┬─┘ └─┬─┘ └─┬─┘ │
+                              └─────┼─────┼─────┼─────┼───┘
+                                    │     │     │     │
+                           User selects a game
+                                    │
+                                    ▼
+                     ┌──────────────────────────────┐
+                     │         GAME ENGINE           │
+                     │                              │
+                     │   ┌────────────────────────┐│
+                     │   │  Game Loop:             ││
+                     │   │  1. Handle Input        ││
+                     │   │  2. Update State        ││
+                     │   │  3. AI Decision (opt)   ││
+                     │   │  4. Render Frame        ││
+                     │   │  5. Repeat              ││
+                     │   └────────────────────────┘│
+                     └──────────────┬───────────────┘
+                                    │
+                         Game Over / Quit
+                                    │
+                                    ▼
+                     ┌──────────────────────────────┐
+                     │      SAVE & RETURN            │
+                     │                              │
+                     │  • Update leaderboard.json   │
+                     │  • Save player stats          │
+                     │  • Return to launcher         │
+                     └──────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+
+AI INTEGRATION FLOW:
+
+  ┌─────────────┐    ┌─────────────────┐    ┌──────────────┐
+  │  Game State  │──▶│  AI Agent       │──▶│  Action      │
+  │  (board,     │   │  (Minimax /     │   │  (move,      │
+  │   positions) │   │   RL Model /    │   │   shoot,     │
+  │              │   │   State Machine)│   │   navigate)  │
+  └─────────────┘    └─────────────────┘    └──────────────┘
+
+  Training Loop (RL):
+  Environment ──▶ Agent ──▶ Action ──▶ Reward ──▶ Learn ──▶ Repeat</div>
+    </div>
+
+    <!-- ==================== GETTING STARTED ==================== -->
+    <div class="flow-section">
+        <h3>⚡ Quick Start Commands</h3>
+        <table>
+            <tr><th>Step</th><th>Command</th><th>Description</th></tr>
+            <tr><td>1</td><td><code>pip install pygame</code></td><td>Install Pygame</td></tr>
+            <tr><td>2</td><td><code>pip install gymnasium stable-baselines3</code></td><td>Install AI tools</td></tr>
+            <tr><td>3</td><td><code>mkdir my-game-console && cd my-game-console</code></td><td>Create project</td></tr>
+            <tr><td>4</td><td><code>python launcher.py</code></td><td>Run game console</td></tr>
+        </table>
+
+        <h3 style="margin-top:30px;">📚 Recommended Learning Resources</h3>
+        <table>
+            <tr><th>Resource</th><th>Type</th><th>URL</th></tr>
+            <tr><td>Pygame Official Docs</td><td>Documentation</td><td><a href="https://www.pygame.org/docs/">pygame.org/docs</a></td></tr>
+            <tr><td>Godot Official Docs</td><td>Documentation</td><td><a href="https://docs.godotengine.org">docs.godotengine.org</a></td></tr>
+            <tr><td>Phaser 3 Examples</td><td>Code Examples</td><td><a href="https://phaser.io/examples">phaser.io/examples</a></td></tr>
+            <tr><td>Gymnasium Tutorials</td><td>RL Tutorials</td><td><a href="https://gymnasium.farama.org">gymnasium.farama.org</a></td></tr>
+            <tr><td>Stable Baselines3 Docs</td><td>RL Algorithms</td><td><a href="https://stable-baselines3.readthedocs.io">stable-baselines3.readthedocs.io</a></td></tr>
+        </table>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer>
+        <p><strong>🎮 Game Engines & Frameworks — Open Source Guide</strong></p>
+        <p>Document generated on August 10, 2026</p>
+        <p style="margin-top: 8px; font-size: 0.8rem;">All GitHub repositories mentioned are open source. Star counts are approximate.</p>
+    </footer>
+
+</div>
+</body>
+</html>
