@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments (uv places one at the repo root)
+.venv/
+venv/
+env/
+
+# Environment files (never commit secrets; .env.example is allowed)
+.env
+.env.*
+!.env.example
+!.**/.env.example
+
+# uv lockfile is committed — leave uv.lock out of ignores.
+
+# SQLite database files
+backend/data/*.db
+backend/data/*.db-journal
+backend/data/*.db-wal
+backend/data/*.db-shm
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,7 @@
+pip install "llama-index-core>=0.11" \
+            llama-index-readers-file \
+            llama-index-embeddings-huggingface \
+            qdrant-client sentence-transformers
+
+docker run -d --name qdrant -p 6333:6333 -v "$(pwd)/qdrant_storage:/qdrant/storage" qdrant/qdrant
+npx inngest-cli@latest dev -u http://127.0.0.1:8000/api/inngest --no-discovery

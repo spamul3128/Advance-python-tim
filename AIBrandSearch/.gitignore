@@ -1,0 +1,11 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+.streamlit/secrets.toml
+# runs/ — uncomment to ignore saved runs (pre-seed 2026-02-26T12-00-00 is kept for demo)
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/

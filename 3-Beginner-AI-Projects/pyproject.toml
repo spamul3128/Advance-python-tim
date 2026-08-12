@@ -1,0 +1,35 @@
+[project]
+name = "agentic-ai-crash-course"
+version = "0.1.0"
+description = "3 Beginner AI Projects — ReAct Agent, AI Resume Critiquer, and Image Classifier"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # Project 1: ReAct Agent (LangGraph + OpenAI)
+    "langchain>=0.3.25",
+    "langchain-openai>=0.3.16",
+    "langgraph>=0.4.1",
+
+    # Project 2: AI Resume Critiquer (Streamlit + OpenAI)
+    "openai>=1.77.0",
+    "pypdf2>=3.0.1",
+
+    # Project 3: Image Classifier (TensorFlow + OpenCV)
+    "opencv-python>=4.11.0.86",
+    "tensorflow>=2.19.0",
+
+    # Shared
+    "python-dotenv>=1.1.0",
+    "streamlit>=1.45.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+

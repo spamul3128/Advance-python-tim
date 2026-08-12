@@ -1,0 +1,12 @@
+# Railway deployment configuration
+# This keeps the start command alongside the repo.
+
+[build]
+nixpacks = true
+
+[deploy]
+# Use uv to run the bot entrypoint
+startCommand = "uv run python bot.py"
+# Restart on failure (keep the bot always-on)
+restartPolicyType = "ON_FAILURE"
+
